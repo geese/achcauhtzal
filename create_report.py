@@ -6,7 +6,7 @@ Args:
     end_date    format YYYYMMDD
 """
 import sys
-
+import re
 
 def convertToDateTime(beg_date, end_date):
     """
@@ -19,7 +19,25 @@ def convertToDateTime(beg_date, end_date):
         tuple[0] is format YYYY-MM-DD 00:00
         tuple[1] is format YYYY-MM-DD 23:59
     """
-    pass  
+    return (beg_date[0:4]+'-'+beg_date[5:7]+'-'+beg_date[-2:]+' 00:00',
+            end_date[0:4]+'-'+end_date[5:7]+'-'+end_date[-2:]+' 23:59')
+
+
+
+def isValidDateInput(date):
+    """
+    Checks that date input matches format YYYYMMDD
+    Args:
+        date:  the date input (or supposed date)
+    Returns:
+        True if format is YYYYMMDD
+        False if format is not YYYYMMDD, or the first digit is 0.
+    """
+    pattern = re.compile('[1-9]\d{7}')
+    if pattern.match(date) == None:
+        return False
+    else:
+        return True
 
 
 # Main function
@@ -30,9 +48,10 @@ def main(beg_date, end_date):
         beg_date:   beginning date, format YYYYMMDD
         end_date:   end date, format YYYYMMDD
     """
-    convertToDateTime(beg_date, end_date)
-    # TODO:  check for bad input and exit(-1)
-    return
+    for date in (beg_date, end_date):
+        if isValidDateInput(date) == False:
+            exit(-1)
+    return convertToDateTime(beg_date, end_date)
 
 
 if __name__ == '__main__':
