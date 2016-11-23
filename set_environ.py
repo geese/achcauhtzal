@@ -8,6 +8,17 @@ Sets the following environment variables needed to connect to the database.
 import sys
 import os
 
+
+def getDatabase():
+    return os.environ.get('DB', '')
+
+def getUser():
+    return os.environ.get('DB_ACT','')
+
+def getPass():
+    return os.environ.get('DB_PW', '')
+
+
 # Main function
 def main():
     """
