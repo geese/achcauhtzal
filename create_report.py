@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Takes two date format input parameters needed to query the tr_database, converts them to datetime format for MySQL.
 Args:
@@ -44,7 +44,7 @@ def isValidDateInput(date):
         return True
 
 
-def getTransactions(beg_date, end_date):
+def print_transactions(beg_date, end_date):
     """
     Connect to MySQL tr_database using environment variables
     """
@@ -52,7 +52,7 @@ def getTransactions(beg_date, end_date):
     s.main() 
     
     dates = convertToDateTime(beg_date, end_date)
-    print(dates)
+    #print(dates)
 
     try:
         conn = MySQLConnection(user=s.getUser(), password=s.getPass(),host='lOcalhost',database=s.getDatabase())
@@ -64,10 +64,15 @@ def getTransactions(beg_date, end_date):
 
         print("Getting transactions from {} to {}".format(dates[0], dates[1]))
 
+        exec = "SELECT t.trans_id, trans_date, card_num, total, tl.prod_num, qty, amt, prod_desc FROM trans t JOIN trans_line tl ON t.trans_id = tl.trans_id JOIN products p ON tl.prod_num = p.prod_num WHERE trans_date between '{}' AND '{}'".format(dates[0],dates[1])
         cursor = conn.cursor()
         
-        exec = 'SELECT t.trans_id, trans_date, card_num, total, tl.prod_num, qty, amt, prod_desc FROM trans t JOIN trans_line tl ON t.trans_id = tl.trans_id JOIN products p ON tl.prod_num = p.prod_num WHERE trans_date between {} AND {}'.format('"'+dates[0]+'"','"'+dates[1]+'"')
+        
+        #exec = 'SELECT t.trans_id, trans_date, card_num, total, tl.prod_num, qty, amt, prod_desc FROM trans t JOIN trans_line tl ON t.trans_id = tl.trans_id JOIN products p ON tl.prod_num = p.prod_num WHERE trans_date between {} AND {}'.format('"'+dates[0]+'"','"'+dates[1]+'"')
        
+        
+       
+        
         cursor.execute(exec)
 
         rows = cursor.fetchall()
@@ -76,9 +81,9 @@ def getTransactions(beg_date, end_date):
         if num_rows > 0:
             # hold the data for the first transaction
             tr_data = {'trans_id':rows[0][0], 'trans_date':re.sub('[\- :]','',str(rows[0][1])), 
-                    'card_num':rows[0][2], 'total':rows[0][3]}
+                    'card_num':rows[0][2][-6:], 'total':rows[0][3]}
         else: # no transactions available for the input dates
-            exit(-2)
+            sys.exit(2)
 
         #initialize the first line that will be printed 
         printString = '{id:05}{date}{card}'.format(id=tr_data['trans_id'],
@@ -99,12 +104,13 @@ def getTransactions(beg_date, end_date):
                 num_blanks = 3 - num_products
                 for i in range(0, num_blanks):
                     printString += '{qty:02}{amt:06.0f}{desc:<10}'.format(qty=0,amt=0,desc='')
+    
                 printString += '{total:06.0f}'.format(total=tr_data['total']*100)
                 print(printString)
                 num_products = 0
                 tr_data['trans_id'] = row[0]
                 tr_data['trans_date'] = re.sub('[\- :]','',str(row[1]))
-                tr_data['card_num'] = row[2]
+                tr_data['card_num'] = row[2][-6:]
                 tr_data['total'] = row[3]
                 printString = '{id:05}{date}{card}'.format(id=tr_data['trans_id'],
                         date=tr_data['trans_date'],card=tr_data['card_num'])
@@ -130,9 +136,10 @@ def main(beg_date, end_date):
     """
     for date in (beg_date, end_date):
         if isValidDateInput(date) == False:
-            exit(-1)
-    return convertToDateTime(beg_date, end_date)
-
+            exit(1)
+    print_transactions(beg_date, end_date)
+    exit(0)
+    #return
 
 if __name__ == '__main__':
     # Call Main
