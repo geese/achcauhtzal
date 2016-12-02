@@ -58,6 +58,6 @@ while getopts ":f:t:e:u:p:" opt; do
 	esac 
 done
 echo $endDate
-`python -c "import create_report.py; create_report.main($beginDate, $endDate)"` 
+python3 -c "import create_report; create_report.main($beginDate, $endDate)" 
 
 exit 0
