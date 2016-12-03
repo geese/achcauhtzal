@@ -67,7 +67,7 @@ user $user $password
 get file1.txt retrieval.$$
 bye 
 EOF
-	mail -s "Successfully transfered file (FTP Address)" "$email" << EMAIL
+	mail -s "Successfully transferred file (FTP Address)" "$email" << EMAIL
 Successfully created a transaction report from BegDate to EndDate 
 EMAIL
 
@@ -87,7 +87,7 @@ fi
 if [[ $? == -2 ]]
 then 
 	mail -s "The create_report program exit with code -2" "$email" << EMAIL
-	No transaction availible from BegDate to EndDate
+	No transaction available from BegDate to EndDate
 EMAIL 
 fi
 
