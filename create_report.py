@@ -23,6 +23,8 @@ def convertToDateTime(beg_date, end_date):
         tuple[0] is format YYYY-MM-DD 00:00
         tuple[1] is format YYYY-MM-DD 23:59
     """
+    beg_date = str(beg_date)
+    end_date = str(end_date)
     return (beg_date[0:4]+'-'+beg_date[4:6]+'-'+beg_date[-2:]+' 00:00',
             end_date[0:4]+'-'+end_date[4:6]+'-'+end_date[-2:]+' 23:59')
 
@@ -38,7 +40,7 @@ def isValidDateInput(date):
         False if format is not YYYYMMDD, or the first digit is 0.
     """
     pattern = re.compile('[1-9]\d{7}')
-    if pattern.match(date) == None:
+    if pattern.match(str(date)) == None:
         return False
     else:
         return True
