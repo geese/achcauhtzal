@@ -33,6 +33,10 @@ def main():
     #os.environ["DB_ACT"]="W01267781"
     #os.environ["DB_PW"]="Giselacs!"
     
+    # os.environ["DB"]="W01064711"
+    # os.environ["DB_ACT"]="W01064711"
+    # os.eviron["DB_PW"]="Rileycs!"
+    
     return
 
 
