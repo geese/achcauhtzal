@@ -29,9 +29,9 @@ def main():
     os.environ["DB_ACT"]="W01216188"
     os.environ["DB_PW"]="Raymondcs!"
     
-    os.environ["DB"]="W01267781"
-    os.environ["DB_ACT"]="W01267781"
-    os.environ["DB_PW"]="Giselacs!"
+    #os.environ["DB"]="W01267781"
+    #os.environ["DB_ACT"]="W01267781"
+    #os.environ["DB_PW"]="Giselacs!"
     
     return
 

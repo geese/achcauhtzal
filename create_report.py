@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Takes two date format input parameters needed to query the tr_database, converts them to datetime format for MySQL.
 Args:
