@@ -120,7 +120,7 @@ def getTransactions(beg_date, end_date):
         print("Connection closed")
 
 
-# Main f/nction
+# Main function
 def main(beg_date, end_date):
     """
     Read two input date format parameters and send them to convertToDateTime() for conversion.
