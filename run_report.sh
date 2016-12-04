@@ -60,7 +60,7 @@ done
 python3 create_report.py $beginDate $endDate
 exitCode=$?
 echo $exitCode
-if [[ $exitCode == 2 ]] 
+if [[ $exitCode == 0 ]] 
 then
 echo "here"
 tar --force-local -cvf "${beginDate}_${endDate}.tar" "company_trans_${beginDate}_${endDate}.dat" 
