@@ -6,6 +6,7 @@ Args:
     end_date    format YYYYMMDD
 """
 import sys
+import io
 import re
 import set_environ as s
 import mysql.connector
@@ -49,6 +50,14 @@ def isValidDateInput(date):
 def print_transactions(beg_date, end_date):
     """
     Connect to MySQL tr_database using environment variables
+    Look up transactions between beginning and ending dates,
+    and write them to a file with special fixed width formatting.
+
+    Args:
+        beg_date:  beginning date
+        end_date:  ending date
+    Returns:
+        nothing
     """
     # set environment variables in order to be able to connect to database
     s.main() 
@@ -57,7 +66,7 @@ def print_transactions(beg_date, end_date):
     #print(dates)
 
     try:
-        conn = MySQLConnection(user=s.getUser(), password=s.getPass(),host='lOcalhost',database=s.getDatabase())
+        conn = MySQLConnection(user=s.getUser(), password=s.getPass(),host='localhost',database=s.getDatabase())
         
         if conn.is_connected():
             print("Connected to", s.getDatabase())
@@ -79,7 +88,10 @@ def print_transactions(beg_date, end_date):
 
         rows = cursor.fetchall()
         num_rows = cursor.rowcount
-        
+        filename = "company_trans_" + beg_date + "_" + end_date + ".dat"
+
+        file = open(filename, "w")
+
         if num_rows > 0:
             # hold the data for the first transaction
             tr_data = {'trans_id':rows[0][0], 'trans_date':re.sub('[\- :]','',str(rows[0][1])), 
@@ -107,7 +119,8 @@ def print_transactions(beg_date, end_date):
                 for i in range(0, num_blanks):
                     printString += '{qty:02}{amt:06.0f}{desc:<10}'.format(qty=0,amt=0,desc='')
     
-                printString += '{total:06.0f}'.format(total=tr_data['total']*100)
+                printString += '{total:06.0f}\n'.format(total=tr_data['total']*100)
+                file.write(printString)
                 print(printString)
                 num_products = 0
                 tr_data['trans_id'] = row[0]
@@ -125,6 +138,7 @@ def print_transactions(beg_date, end_date):
         print(error)
     finally:
         conn.close()
+        file.close()
         print("Connection closed")
 
 
