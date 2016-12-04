@@ -57,38 +57,32 @@ while getopts ":f:t:e:u:p:" opt; do
 	;;
 	esac 
 done
-echo $endDate
 python3 create_report.py $beginDate $endDate
-
-if [[ $? == 0 ]] 
+exitCode=$?
+if [[ $exitCode == 0 ]] 
 then
 ftp -inv 137.190.19.84 << EOF
 user $user $password
 get file1.txt retrieval.$$
 bye 
 EOF
-	mail -s "Successfully transferred file (FTP Address)" "$email" << EMAIL
-Successfully created a transaction report from BegDate to EndDate 
-EMAIL
 
+echo "Successfully created a transaction report from BegDate to EndDate" | mail -s "Successfully transferred file (FTP Address)" "$email" 
 fi
 
-if [[ $? == -1 ]]
+if [[ $exitCode == 1 ]]
 then
-mail -s "The create_report program exited with code -1" "$email" << EMAIL 
-Bad Input parameters BegDate EndDate
-EMAIL
+echo "Bad Input parameters BegDate EndDate" | mail -s "The create_report program exited with code 1" "$email" 
+
 
 fi
 
 
 
 
-if [[ $? == -2 ]]
+if [[ $exitCode == 2 ]]
 then 
-	mail -s "The create_report program exit with code -2" "$email" << EMAIL
-	No transaction available from BegDate to EndDate
-EMAIL 
+echo "No transactions available from BegDate to EndDate" | mail -s "The create_report program exit with code 2" "$email"
 fi
 
 exit 0
