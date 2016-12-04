@@ -59,14 +59,18 @@ while getopts ":f:t:e:u:p:" opt; do
 done
 python3 create_report.py $beginDate $endDate
 exitCode=$?
-if [[ $exitCode == 0 ]] 
+echo $exitCode
+if [[ $exitCode == 2 ]] 
 then
+echo "here"
+tar --force-local -cvf "${beginDate}_${endDate}.tar" "company_trans_${beginDate}_${endDate}.dat" 
 ftp -inv 137.190.19.84 << EOF
 user $user $password
-get file1.txt retrieval.$$
+put "${beginDate}_${endDate}.tar" 
 bye 
 EOF
 
+echo  "company_trans_${beginDate}_${endDate}.dat"
 echo "Successfully created a transaction report from BegDate to EndDate" | mail -s "Successfully transferred file (FTP Address)" "$email" 
 fi
 
